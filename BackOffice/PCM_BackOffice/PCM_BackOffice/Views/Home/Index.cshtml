@@ -1,0 +1,146 @@
+﻿
+
+@model Core.Home.Emp_Content_Details
+@{
+    ViewData["Title"] = "Index";
+    Layout = null;
+}
+
+<meta charset="UTF-8">
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>PCM CRM </title>
+<meta name="Description" content="">
+<meta name="Author" content="">
+<meta name="keywords" content="">
+<!-- Favicon -->
+<link rel="icon" href="../assets/images/brand-logos/favicon.ico" type="image/x-icon">
+<!-- Main Theme Js -->
+<script src="../assets/js/authentication-main.js"></script>
+<!-- Bootstrap Css -->
+<link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Style Css -->
+<link href="../assets/css/styles.min.css" rel="stylesheet">
+<!-- Icons Css -->
+<link href="../assets/css/icons.min.css" rel="stylesheet">
+<body style="background-image:url('http://localhost:5156/images/crm-banner-image-1.jpg');background-size:cover;">
+    <div class="autentication-bg">
+        <div class="container-lg">
+            <div class="row justify-content-center authentication authentication-basic align-items-center h-100">
+                <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-6 col-sm-8 col-12">
+                    <div class="my-4 d-flex justify-content-center">
+                        <a href="index.html">
+                           @*  <img src="../assets/images/brand-logos/desktop-white.png" alt="logo"> *@
+                        </a>
+                    </div>
+                    <div class="card custom-card">
+                        <div class="card-body">
+                            <form class="form-horizontal" asp-action="Index" asp-controller="Home" method="post">
+                                <div class="brand-logo">
+                                    <img src="../../images/pcmlogo.png" alt="logo" class="center:!important" style="width:256px;">
+                                </div>
+                                <br/>
+                                <p class="op-7 fw-normal text-center" style="font-size:25px; color:#0b5ed7;"><b>PCM CRM </b></p>
+                                <p class="h5  fw-semibold mb-2 text-center">Sign in to continue.</p>
+                            <div class="row gy-3">
+                                <div class="col-xl-12">
+                                    <label for="signin-username" class="form-label text-default">User Name</label>
+                                        <input id="textusername" class="form-control form-control-lg" onblur="return Emp_ID();" asp-for="Str_Login_ID" name="Str_Login_ID" type="text" placeholder="Enter User Emp_ID" />
+                                    <span id="spn_empid" style="color:red;"></span>
+                                 
+                                </div>
+                                <div class="col-xl-12 mb-2">
+                                    <label for="signin-password" class="form-label text-default d-block">Password<a href="reset-password.html" class="float-end text-danger">Forget password ?</a></label>
+                                    <div class="input-group">
+                                            
+                                        <input class="form-control form-control-lg" id="textuserpassword" onblur="return password();" asp-for="Str_Password" type="password" placeholder="enter Password" />
+                                        <span id="spn_emp_password" style="color:red;"></span>
+                                    </div>
+                                    <div class="mt-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                            <label class="form-check-label text-muted fw-normal" for="defaultCheck1">
+                                                Remember password ?
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-12 d-grid mt-2">
+                                        <button class="btn btn-lg btn-primary" onclick="return Validation();" type="submit" id="button-addon2">Sign In </button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Custom-Switcher JS -->
+    <script src="../assets/js/custom-switcher.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Show Password JS -->
+    <script src="../assets/js/show-password.js"></script>
+    <script src="~/assets/js/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript">
+
+
+    function Emp_ID() {
+       
+        if ($("#textusername").val() == "") {
+
+            $("#spn_empid").html("Please Fill Your Employee ID !!");
+                return false;
+        }
+        else {
+            $("#spn_empid").html("");
+        }
+
+    }
+
+    function password() {
+        if ($("#textuserpassword").val() == "") {
+
+                $("#spn_emp_password").html("Please Enter your Password !!");
+                return false;
+        }
+        else {
+                $("#spn_emp_password").html("");
+        }
+
+    }
+
+    function Validation() {
+        var str = "";
+
+        if ($("#textusername").val() == "") {
+
+            $("#spn_empid").html("Please Enter First Name !!");
+            str += "Please Enter First Name !!\n\r";
+            return false;
+
+        }
+        else { $("#spn_empid").html(""); }
+
+        if ($("#textuserpassword").val() == "") {
+
+                $("#spn_emp_password").html("Please Enter Last Name !!");
+            str += "Please Enter Last Name !!\n\r";
+                return false;
+        }
+            else { $("#spn_emp_password").html(""); }
+      
+        if (str == "") {
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
+
+</script>
+</body>

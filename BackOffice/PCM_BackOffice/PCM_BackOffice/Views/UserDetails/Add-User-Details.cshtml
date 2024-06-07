@@ -1,0 +1,315 @@
+﻿
+@model Core.UserDetails.User_DetailsContent
+
+@{
+    ViewData["Title"] = "Add-User-Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div style="height:10px;"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <form asp-action="Add-User-Details" asp-controller="UserDetails" method="post">
+                    <div class="card custom-card">
+                        <div class="card-header justify-content-between">
+                            <div class="card-title">
+                                Completing the registration form
+                            </div>
+                            <div class="alert alert-success" role="alert" style="display: @ViewBag.none">
+                                @ViewBag.message
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Real Name</label><span style="color:red">*</span>
+                                    <input onblur="return user()" class="form-control" id="textusername" asp-for="Str_Real_Name" name="Str_Real_Name" type="text" placeholder="User Name" , onkeypress="return LettersOnly(this.value)" />
+                                    <span style="color:red" id="spn_user"></span>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Pseudo Name</label><span style="color:red">*</span>
+                                    <input onblur="return pseudo();" class="form-control" asp-for="Str_Pseudo_Name" name="Str_Pseudo_Name" type="text" id="textpseudoname" placeholder="Pseudo name" />
+                                    <span style="color:red" id="spn_pseudo"></span>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Employee ID</label><span style="color:red">*</span>
+                                    <input onblur="return emp_id();" onchange="return searchempid();" class="form-control" asp-for="Str_Emp_ID" name="Str_Emp_ID" type="text" id="textempid" placeholder="Employee ID" />
+                                    <span style="color:red" id="spn_emp_id"></span>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Login ID</label><span style="color:red">*</span>
+                                    <input onblur="return login_id();" onchange="return searchloginid();" class="form-control" asp-for="Str_Login_ID" name="Str_Login_ID" type="text" id="textloginid" placeholder="Login ID" />
+                                    <span style="color:red" id="spn_Loginid"></span>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Password</label><span style="color:red">*</span>
+                                    <input onblur="return password();" class="form-control" asp-for="Str_Password" name="Str_Password" type="text" id="textpassword" placeholder="Password" />
+                                    <span style="color:red" id="spn_password"></span>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Designation</label><span style="color:red">*</span>
+                                    @Html.DropDownListFor(o => o.Str_Designation, new SelectList(ViewBag.designation, "Int_Id", "Str_Designation"), new { @class = "form-control", @id = "textdesignation", @onblur = "return designation();" })
+                                    <span style="color:red" id="spn_designation"></span>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Email ID</label>
+                                    <input class="form-control" asp-for="Str_Email_ID" name="Str_Email_ID" type="text" id="textemailid" placeholder="Email ID" />
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Mobile Number</label>
+                                    <input class="form-control" asp-for="Str_Mobile_Num" name="Str_Mobile_Num" type="text" id="textmobilenumber" placeholder="Mobile Number" />
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Department</label><span style="color:red">*</span>
+                                    @Html.DropDownListFor(o => o.Str_Dept_ID, new SelectList(ViewBag.department, "Int_Id", "Str_Department"), new { @class = "form-control", @id = "textdepartment", @onblur = "return department();" })
+                                    <span style="color:red" id="spn_department"></span>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Access Level</label>
+                                    @Html.DropDownListFor(o => o.Str_Access_Level, new SelectList(ViewBag.accesslevel, "Int_Id", "Str_Access_Level"), new { @class = "form-control", @id = "textaccesslevel" })
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Manager ID</label>
+                                    <input class="form-control" asp-for="Str_Mng_Emp_ID" name="Str_Mng_Emp_ID" type="text" id="textmanagerid" placeholder="Manager Employee ID" />
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Team LeaderID</label>
+                                    <input class="form-control" asp-for="Str_TL_Emp_ID" name="Str_TL_Emp_ID" type="text" id="textmanagerid" placeholder="Manager Employee ID" />
+                                </div>
+                                <div class="btn-list">
+                                    <label for="input-label" class="form-label"></label>
+                                    <button type="submit" onclick="return validation();" class="btn btn-primary btn-wave waves-effect waves-light">  Add User  </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+       
+    </div>
+</div>
+
+<script src="~/assets/js/jquery.min.js"></script>
+@* <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> *@
+
+ <script type="text/javascript">
+
+    function searchloginid() {
+        var jsdata = $("#textloginid").val();
+        var data = {
+            Str_Login_ID: jsdata
+        }
+        $.ajax({
+            type: "POST",
+            url: "/UserDetails/searchloginid",
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            dataType: "json",
+            data: data,
+            responseType: "json",
+            success: function (data) {
+         
+                $("#divProgressBar2").hide();
+                if (data != "") {
+                    $("#spn_Loginid").html("This Login ID is Already exist !!");
+                    return false;
+                }
+                else {
+                    $("#spn_Loginid").html("");
+                    return true;
+                }
+            },
+            error: function (data) { $("#divProgressBar2").hide(); }
+        });
+
+    }
+
+
+    function searchempid() {
+        var jsdata = $("#textempid").val();
+        var data = {
+            Str_Emp_ID: jsdata
+        }
+        $.ajax({
+            type: "POST",
+            url: "/UserDetails/searchempid",
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            dataType: "json",
+            data: data,
+            responseType: "json",
+            success: function (data) {
+                $("#divProgressBar2").hide();
+                if (data != "") {
+                    $("#spn_emp_id").html("this Employee ID is already exist !!");
+                    return false;
+                }
+                else {
+                    $("#spn_emp_id").html("");
+                    return true;
+                }
+            },
+            error: function (data) { $("#divProgressBar2").hide(); }
+        });
+
+    }
+
+
+    function user() {
+       
+        if ($("#textusername").val() == "") {
+            $("#spn_user").html("Entering an User Name is Necessary !!");
+        }
+        else {
+            $("#spn_user").html("");
+        }
+    }
+
+
+    function pseudo() {
+        if ($("#textpseudoname").val() == "") {
+            $("#spn_pseudo").html("Entering a Pseudo Name is Necessary !!");
+        }
+        else {
+            $("#spn_pseudo").html("");
+        }
+    }
+
+    function emp_id() {
+        if ($("#textempid").val() == "") {
+            $("#spn_emp_id").html("Entering an Email-ID is Necessary !!");
+        }
+        else {
+            $("#spn_emp_id").html("");
+        }
+    }
+
+    function login_id() {
+        if ($("#textloginid").val() == "") {
+            $("#spn_Loginid").html("Entering a Login-ID is Necessary !!");
+        }
+        else {
+            $("#spn_Loginid").html("");
+        }
+    }
+
+    function password() {
+       
+        if ($("#textpassword").val() == "") {
+            $("#spn_password").html("Entering a Password is Necessary !!");
+        }
+        else {
+            $("#spn_password").html("");
+        }
+    }
+
+    function designation() {
+       
+        if ($("#textdesignation").val() == "" || $("#textdesignation").val() == "0") {
+
+            $("#spn_designation").html("Entering a Designation is Necessary !!");
+        }
+        else {
+            $("#spn_designation").html("");
+        }
+    }
+
+    function department() {
+        if ($("#textdepartment").val() == "" || $("#textdepartment").val() == "0") {
+            $("#spn_department").html("Entering a department is Necessary !!");
+        }
+        else {
+            $("#spn_department").html("");
+        }
+    }
+
+    $(document).ready(function () {
+        $('#textusername').on("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+    });
+    function validation() {
+        var str = "";
+        if ($("#textusername").val() == "") {
+
+            $("#spn_user").html("Entering an User Name is Necessary !!");
+            str += "Entering an User Name is Necessary !!\n\r";
+        }
+        else { $("#spn_user").html(""); }
+
+        if ($("#textpseudoname").val() == "") {
+
+            $("#spn_pseudo").html("Please Enter Last Name !!");
+            str += "Please Enter Last Name !!\n\r";
+        }
+        else { $("#spn_pseudo").html(""); }
+        if ($("#textempid").val() == "") {
+            $("#spn_emp_id").html("Entering an Email-ID is Necessary !!");
+            str += "Entering an Email-ID is Necessary !! \n\r";
+        }
+        else { $("#spn_emp_id").html(""); }
+        if ($("#textloginid").val() == "") {
+            $("#spn_Loginid").html("Entering a Login-ID is Necessary !!");
+            str += "Entering a Login-ID is Necessary !! \n\r";
+        }
+        else { $("#spn_Loginid").html(""); }
+        if ($("#textpassword").val() == "") {
+            $("#spn_password").html("Entering a Password is Necessary !!");
+            str += "Entering a Password is Necessary !! \n\r";
+        }
+        else { $("#spn_password").html(""); }
+        if ($("#textdesignation").val() == "" || $("#textdesignation").val() == "0") {
+            $("#spn_designation").html("Entering a Designation is Necessary !!");
+            str += "Entering a Designation is Necessary !! \n\r";
+       
+        }
+        else { $("#spn_designation").html(""); }
+        if ($("#textdepartment").val() == "" || $("#textdesignation").val() == "0") {
+            $("#spn_department").html("Entering a department is Necessary !!");
+            str += "Entering a department is Necessary !! \n\r";
+      
+        }
+        else { $("#spn_department").html(""); }
+        if ($("#textempid").val() == "" || $("#textempid").val() != "") {
+            searchloginid();
+            return false;
+       
+        }
+        else { $("#spn_Loginid").html(""); }
+        if ($("#textempid").val() != "" || $("#textempid").val() == "") {
+            searchempid();
+            return false
+     
+        }
+        else { $("#spn_emp_id").html(""); }
+
+        if (str == "") {
+
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function LettersOnly(e) {
+        var keycode;
+        if (window.event) {
+            keycode = window.event.keyCode; /*alert('IE');*/
+        }
+        else if (e) {
+            keycode = e.which; /*alert('FF');*/
+        }
+        var k = parseInt(keycode);
+        if ((k > 64 && k < 91) || (k > 96 && k < 123) || (k == 32) || (k == 8) || (k == 0)) {
+            return true;
+        }
+        return false;
+    }
+
+
+</script> 

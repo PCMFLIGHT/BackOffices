@@ -1,0 +1,944 @@
+﻿@model Core.ChatProcess.ChatProcessList
+@{
+    ViewData["Title"] = "Chat Process";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- Choices Css -->
+<link rel="stylesheet" href="../assets/libs/choices.js/public/assets/styles/choices.min.css">
+<link rel="stylesheet" href="../assets/libs/quill/quill.snow.css">
+<link rel="stylesheet" href="../assets/libs/quill/quill.bubble.css">
+<style>
+    .activecolor {
+        background-color: #4D4D88 !important;
+    }
+
+    .activecolorP {
+        color: #FFFFFF !important;
+    }
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+ 
+<div class="main-content app-content">
+    <div class="container-fluid">
+
+
+        <!-- PAGE-HEADER -->
+        <div style="height:5px!important"></div>
+        <!-- PAGE-HEADER END -->
+
+
+        <div class="main-chart-wrapper gap-2 mb-5 d-xl-flex" style='text-align:left!important'>
+            <div class="chat-info border" style="min-height:450px!important; max-height:1250px!important">
+
+                <div class="d-flex align-items-center justify-content-between w-100 p-3 border-bottom">
+                    <h6 class="fw-semibold mb-0">Messages</h6>
+                </div>
+
+
+                <ul class="nav nav-tabs tab-style-6 p-0 nav-justified mb-0 border-bottom d-block d-sm-flex rounded-0"
+                    id="myTab1" role="tablist">
+
+                    <li class="nav-item border-end me-0" role="presentation">
+                        <button class="nav-link fs-14 active" id="users-tab" data-bs-toggle="tab"
+                                data-bs-target="#users-tab-pane" type="button" role="tab"
+                                aria-controls="users-tab-pane" aria-selected="true">
+                            <i class="fe fe-mail me-1 align-middle d-inline-block"></i>Chats
+                        </button>
+                    </li>
+                  @*   <li class="nav-item border-end me-0" role="presentation">
+                        <button class="nav-link  fs-14" id="groups-tab" data-bs-toggle="tab"
+                                data-bs-target="#groups-tab-pane" type="button" role="tab"
+                                aria-controls="groups-tab-pane" aria-selected="false">
+                            <i class="fe fe-users me-1 align-middle d-inline-block"></i>Groups
+                        </button>
+                    </li> *@
+
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active border-0" style="height:300px!important; overflow:auto!important;" id="users-tab-pane"
+                         role="tabpanel" aria-labelledby="users-tab" tabindex="0">
+
+                        <ul class="list-unstyled mb-0 mt-2 chat-users-tab" id="chat-msg-scroll">
+                            <li class="pb-0">
+                                <p class="text-muted fs-11 fw-semibold mb-2 op-7">ACTIVE CHATS</p>
+                            </li>
+
+                            @foreach (var stud in ViewBag.UserList)
+                            {
+                                <li class="checkforactive">
+                                    <a href="javascript:void(0);" onclick="return setuser('@stud.Emp_ID','@stud.Pseudo_Name')">
+
+                                        <div class="d-flex align-items-top">
+
+                                            <div class="flex-fill">
+                                                <p class="mb-0 fw-semibold">
+                                                    @stud.Pseudo_Name
+                                                    <span class='badge bg-secondary-transparent'>@stud.countmessage</span>
+                                                    <span class="float-end text-muted fw-normal fs-11">@stud.Time</span>
+                                                </p>
+                                                <p class="fs-12 mb-0">
+                                                    <span class="chat-msg text-truncate">@stud.Massage</span>
+                                                    <span class="chat-read-icon float-end align-middle">
+                                                       @*  <i class="ri-check-double-fill"></i> *@
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+
+                            }
+
+                        </ul>
+
+                    </div>
+                  @*   <div class="tab-pane fade border-0 " id="groups-tab-pane"
+                         role="tabpanel" aria-labelledby="groups-tab" tabindex="0">
+
+                        <ul class="list-unstyled mb-0 mt-2 ">
+                            <li class="pb-0">
+                                <p class="text-muted fs-11 fw-semibold mb-1 op-7">GROUP CHATS</p>
+                            </li>
+                            <li class="checkforactive">
+                                <a href="javascript:void(0);" onclick="changeTheInfo(this,'Family Together &#128525;','18','online')">
+                                    <div class="d-flex align-items-top">
+                                        <div class="me-1 lh-1">
+                                            <span class="avatar avatar-md online me-2 avatar-rounded">
+                                                <img src="../assets/images/faces/17.jpg" alt="img">
+                                            </span>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <p class="mb-0 fw-semibold">
+                                                Family Together &#128525; <span class="float-end text-muted fw-normal fs-11">12:24PM</span>
+                                            </p>
+                                            <p class="fs-12 mb-0 chat-msg-typing ">
+                                                <span class="chat-msg text-truncate">Hira Typing...</span>
+                                                <span class="chat-read-icon float-end align-middle">
+                                                    <i class="ri-check-double-fill"></i>
+                                                </span>
+                                                <span class="badge bg-success-transparent rounded-circle float-end">2</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="chat-msg-unread checkforactive">
+                                <a href="javascript:void(0);" onclick="changeTheInfo(this,'Work Buddies','19','online')">
+                                    <div class="d-flex align-items-top">
+                                        <div class="me-1 lh-1">
+                                            <span class="avatar avatar-md online me-2 avatar-rounded">
+                                                <img src="../assets/images/faces/18.jpg" alt="img">
+                                            </span>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <p class="mb-0 fw-semibold">
+                                                Work Buddies <span class="float-end text-muted fw-normal fs-11">1:16PM</span>
+                                            </p>
+                                            <p class="fs-12 mb-0">
+                                                <span class="chat-msg text-truncate">
+                                                    <span class="group-indivudial">Rams:</span>Happy to be part of
+                                                    this group
+                                                </span>
+                                                <span class="chat-read-icon float-end align-middle">
+                                                    <i class="ri-check-double-fill"></i>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="chat-inactive checkforactive">
+                                <a href="javascript:void(0);" onclick="changeTheInfo(this,'Friends Forever &#128526;','20','offline')">
+                                    <div class="d-flex align-items-top">
+                                        <div class="me-1 lh-1">
+                                            <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                                <img src="../assets/images/faces/19.png" alt="img">
+                                            </span>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <p class="mb-0 fw-semibold">
+                                                Friends Forever &#128526; <span class="float-end text-muted fw-normal fs-11">
+                                                    3 days
+                                                    ago
+                                                </span>
+                                            </p>
+                                            <p class="fs-12 mb-0">
+                                                <span class="chat-msg text-truncate">Simon,Melissa,Amanda,Patrick,Siddique</span>
+                                                <span class="chat-read-icon float-end align-middle">
+                                                    <i class="ri-check-double-fill"></i>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="chat-inactive checkforactive">
+                                <a href="javascript:void(0);" onclick="changeTheInfo(this,'Social Media Deals','21','offline')">
+                                    <div class="d-flex align-items-top">
+                                        <div class="me-1 lh-1">
+                                            <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                                <img src="../assets/images/faces/20.jpg" alt="img">
+                                            </span>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <p class="mb-0 fw-semibold">
+                                                Social Media Deals <span class="float-end text-muted fw-normal fs-11">
+                                                    5 days
+                                                    ago
+                                                </span>
+                                            </p>
+                                            <p class="fs-12 mb-0">
+                                                <span class="chat-msg text-truncate">Kamalan,Subha,Ambrose,Kiara,Jackson</span>
+                                                <span class="chat-read-icon float-end align-middle">
+                                                    <i class="ri-check-double-fill"></i>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="chat-inactive checkforactive">
+                                <a href="javascript:void(0);" onclick="changeTheInfo(this,'Apartment Group','21','offline')">
+                                    <div class="d-flex align-items-top">
+                                        <div class="me-1 lh-1">
+                                            <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                                <img src="../assets/images/faces/21.jpg" alt="img">
+                                            </span>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <p class="mb-0 fw-semibold">
+                                                Apartment Group <span class="float-end text-muted fw-normal fs-11">
+                                                    12 days
+                                                    ago
+                                                </span>
+                                            </p>
+                                            <p class="fs-12 mb-0">
+                                                <span class="chat-msg text-truncate">Subman,Rajen,Kairo,Dibasha,Alexa</span>
+                                                <span class="chat-read-icon float-end align-middle">
+                                                    <i class="ri-check-double-fill"></i>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="list-unstyled mb-0 mt-2 ">
+                            <li class="pb-0">
+                                <p class="text-muted fs-11 fw-semibold mb-1 op-7">MY CHAT GROUPS</p>
+                            </li>
+                            <li>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="mb-0">1) Family Together</p>
+                                        <p class="mb-0">
+                                            <span class="badge bg-success-transparent">
+                                                4
+                                                Online
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="avatar-list-stacked my-auto">
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/2.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/8.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/2.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/10.jpg" alt="img">
+                                        </span>
+                                        <a class="avatar avatar-sm bg-primary text-fixed-white avatar-rounded fs-10"
+                                           href="javascript:void(0);">
+                                            +19
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="mb-0">2) Work Buddies </p>
+                                        <p class="mb-0">
+                                            <span class="badge bg-secondary-transparent">
+                                                32
+                                                Online
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="avatar-list-stacked my-auto">
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/1.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/7.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/3.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/9.png" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/12.jpg" alt="img">
+                                        </span>
+                                        <a class="avatar avatar-sm bg-primary text-fixed-white avatar-rounded fs-10"
+                                           href="javascript:void(0);">
+                                            +12
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="mb-0">3) Friends Forever</p>
+                                        <p class="mb-0">
+                                            <span class="badge bg-warning-transparent">
+                                                3
+                                                Online
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="avatar-list-stacked my-auto">
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/4.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/8.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/13.jpg" alt="img">
+                                        </span>
+                                        <a class="avatar avatar-sm bg-primary text-fixed-white avatar-rounded fs-10"
+                                           href="javascript:void(0);">
+                                            +15
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="mb-0">4) Social Media Deals</p>
+                                        <p class="mb-0">
+                                            <span class="badge bg-danger-transparent">
+                                                5
+                                                Online
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="avatar-list-stacked my-auto">
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/1.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/7.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/14.jpg" alt="img">
+                                        </span>
+                                        <a class="avatar avatar-sm bg-primary text-fixed-white avatar-rounded fs-10"
+                                           href="javascript:void(0);">
+                                            +28
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="mb-0">4) Apartment Group</p>
+                                        <p class="mb-0">
+                                            <span class="badge bg-light text-dark">0 Online</span>
+                                        </p>
+                                    </div>
+                                    <div class="avatar-list-stacked my-auto">
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/5.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/6.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/12.jpg" alt="img">
+                                        </span>
+                                        <span class="avatar avatar-sm avatar-rounded">
+                                            <img src="../assets/images/faces/3.jpg" alt="img">
+                                        </span>
+                                        <a class="avatar avatar-sm bg-primary text-fixed-white avatar-rounded fs-10"
+                                           href="javascript:void(0);">
+                                            +53
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div> *@
+                </div>
+            </div>
+            <div class="main-chat-area border" style="min-height:450px!important; max-height:1250px!important; ">
+                 <form id="ChatProcessListFrom" novalidate class="needs-validation">
+                <div class="d-flex align-items-center p-3 border-bottom">
+
+                    <div class="flex-fill">
+                        <a href="javascript:void(0);" id="reciverNames" class="chatnameperson responsive-userinfo-open" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                                <span style="color:red; font-weight:900;"> Please selected someone to chat!</span>
+
+                        </a>
+                      @*   <p class="text-muted mb-0 chatpersonstatus">online</p> *@
+                    </div>
+                    <div class="d-flex">
+                       @*  <button aria-label="button" type="button" class="btn btn-icon btn-light ms-2 d-none d-sm-block">
+                            <i class="bx bx-phone"></i>
+                        </button>
+                        <button aria-label="button" type="button" class="btn btn-icon btn-light ms-2 d-none d-sm-block">
+                            <i class="bx bx-video"></i>
+                        </button>
+                        <button aria-label="button" type="button" class="btn btn-icon btn-light ms-2 responsive-userinfo-open" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                            <i class="bx bx-user-circle" id="responsive-chat-close"></i>
+                        </button> *@
+                        <div class="dropdown ms-2">
+                            <button aria-label="button" type="button" class="btn btn-icon btn-light btn-wave waves-light"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="ti ti-dots-vertical"></i>
+                            </button>
+                           @*  <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="javascript:void(0);">Profile</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);">Clear Chat</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);">Delete User</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);">Block User</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);">Report</a></li>
+                            </ul> *@
+                        </div>
+                        <button aria-label="button" type="button" class="btn btn-icon btn-outline-light ms-2 responsive-chat-close">
+                            <i class="ri-close-line"></i>
+                        </button>
+                    </div>
+                </div>
+                    <div class="chat-content" id="main-chat-content" style="min-height:280px!important; overflow-y:auto!important;overflow-x:hidden!important;">
+                        <ul class="list-unstyled" id="divmsg">
+                      
+
+                    </ul>
+                </div>
+                    <div class="chat-footer">
+                   @*  <a aria-label="anchor" class="btn btn-icon me-2 btn-warning-light" href="javascript:void(0)">
+                        <i class="ri-emotion-line"></i>
+                    </a> *@ 
+                        @* <input asp-for="Massage" class="form-control" id="Massage" placeholder="Type your message here..." onkeypress="return sendEnter();" onkeyup="return sendEnter();" /> *@
+
+                        <div class="form-control" style="min-width:150px!important;" id="editor1" onkeypress="return sendEnter();" onkeyup="return sendEnter();">Please selected someone to chat !</div>
+                       
+                    @*<a aria-label="anchor" class="btn btn-icon mx-2 btn-primary-light" href="javascript:void(0)">
+                    <i class="ri-attachment-2" ></i><input type="file" id="file1" class="btn btn-icon mx-2 btn-primary-light ri-attachment-2"/>
+                    </a>*@
+                    <input type="file" id="file1" multiple class="btn btn-icon mx-2 btn-primary-light ri-attachment-2" style="padding-left:20px;" />
+
+                      
+                        <a class="btn btn-primary d-inline-flex" onclick="return send();">
+                        <i class="ri-send-plane-2-line me-2"></i>Send
+                    </a>
+
+                        <input asp-for="SenderID" type="hidden" id="SenderID" value="@ViewBag.SenderIDs" />
+                        <input asp-for="SenderName" type="hidden" id="SenderName" value="@ViewBag.SenderName" />
+                        <input asp-for="ReciverID" type="hidden" id="ReciverID" value="" />
+                        <input asp-for="ReciverName" type="hidden" id="ReciverName" value="" />
+                        <input asp-for="Chatpool" type="hidden" id="Chatpool" value="0" />
+                        <input asp-for="Newmessage" type="hidden" id="Newmessage" value="0" />
+                        <input asp-for="Massage" type="hidden" id="Massage" value="0" />
+
+                </div>
+                </form>
+            </div>
+
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+                <div class="offcanvas-header">
+                    <button type="button" class="btn-close ms-auto p-3" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="chat-user-details pt-0" id="chat-user-details">
+                    <div class="text-center mb-5">
+                        <span class="avatar avatar-rounded online avatar-xxl me-2 mb-3 chatstatusperson">
+                            <img class="chatimageperson" src="../assets/images/faces/2.jpg" alt="img">
+                        </span>
+                        <p class="mb-1 fs-15 fw-semibold text-dark lh-1 chatnameperson">Emiley Jackson</p>
+                        <p class="fs-12 text-muted  mb-0"><span class="chatnameperson">+12(987-987-670)</span></p>
+                        <p class="fs-12 text-muted"><span class="chatnameperson">emaileyjackson2134</span>gmail.com</p>
+                        <p class="text-center mb-0">
+                            <button aria-label="button" type="button" class="btn btn-sm rounded-2 btn-primary-light fw-semibold">
+                                <i class="ri-phone-line"></i>
+                            </button>
+                            <button aria-label="button" type="button" class="btn btn-sm rounded-2 btn-primary-light fw-semibold ms-2">
+                                <i class="ri-video-add-line"></i>
+                            </button>
+                            <button aria-label="button" type="button" class="btn btn-sm rounded-2 btn-primary-light fw-semibold ms-2">
+                                <i class="ri-chat-1-line"></i>
+                            </button>
+                            <button aria-label="button" type="button" class="btn btn-sm rounded-2 btn-primary-light fw-semibold ms-2">
+                                <i class="ri-search-line"></i>
+                            </button>
+                        </p>
+                    </div>
+                    <div class="mb-5">
+                        <div class="fw-semibold mb-4">
+                            Shared Files
+                            <span class="badge bg-success-transparent rounded-circle ms-1">5</span>
+                            <span class="float-end fs-11"><a href="javascript:void(0);" class="link-primary text-underline"><u>View All</u></a></span>
+                        </div>
+                        <ul class="shared-files list-unstyled">
+                            <li>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2">
+                                        <span class="shared-file-icon">
+                                            <i class="ri-image-line bg-warning-transparent"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-fill">
+                                        <p class="fs-12 fw-semibold mb-0">Img_15.Jpg</p>
+                                        <p class="mb-0 text-muted fs-11">22,Oct 2022 - 10:18AM</p>
+                                    </div>
+                                    <div class="fs-18">
+                                        <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2">
+                                        <span class="shared-file-icon">
+                                            <i class="ri-image-line bg-info-transparent"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-fill">
+                                        <p class="fs-12 fw-semibold mb-0">Img_02.Jpg</p>
+                                        <p class="mb-0 text-muted fs-11">22,Oct 2022 - 10:19AM</p>
+                                    </div>
+                                    <div class="fs-18">
+                                        <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2">
+                                        <span class="shared-file-icon">
+                                            <i class="ri-video-line bg-danger-transparent"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-fill">
+                                        <p class="fs-12 fw-semibold mb-0">Movie_13_02_2023.MP4</p>
+                                        <p class="mb-0 text-muted fs-11">22,Oct 2022 - 10:18AM</p>
+                                    </div>
+                                    <div class="fs-18">
+                                        <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2">
+                                        <span class="shared-file-icon">
+                                            <i class="ti ti-file-text bg-success-transparent"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-fill">
+                                        <p class="fs-12 fw-semibold mb-0">Project Details.pdf</p>
+                                        <p class="mb-0 text-muted fs-11">24,Oct 2022 - 14:24PM</p>
+                                    </div>
+                                    <div class="fs-18">
+                                        <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2">
+                                        <span class="shared-file-icon">
+                                            <i class="ri-video-line bg-pink-transparent"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-fill">
+                                        <p class="fs-12 fw-semibold mb-0">Video_15_02_2022.MP4</p>
+                                        <p class="mb-0 text-muted fs-11">22,Oct 2022 - 10:18AM</p>
+                                    </div>
+                                    <div class="fs-18">
+                                        <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mb-0">
+                        <div class="fw-semibold mb-4">
+                            Photos &amp; Media
+                            <span class="badge bg-primary-transparent rounded-circle ms-1">22</span>
+                            <span class="float-end fs-11"><a href="javascript:void(0);" class="link-primary text-underline"><u>View All</u></a></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-56.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-52.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-53.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-62.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-63.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-64.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-13.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-19.png" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-20.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-56.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-52.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-53.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-56.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-52.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-53.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                    <img src="../assets/images/media/media-20.jpg" alt="">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Quill Editor JS -->
+<script src="../assets/libs/quill/quill.min.js"></script>
+
+<!-- Internal Quill JS -->
+<script src="../assets/js/quill-editor.js"></script>
+<script type="text/javascript"> 
+    $(".responsive-chat-close").on('click', function (event) {
+        $(".main-chart-wrapper").removeClass("responsive-chat-open");
+    }); 
+    function send()
+    {
+
+        var sendernm = $("#ReciverName").val();
+        if (sendernm == "") {
+
+            alert("Please Select Member!");
+            return false;
+        }
+
+        var fileUpload = $("#file1").get(0);
+        var files = fileUpload.files;
+        
+        var data = new FormData();
+        for (var i = 0; i < files.length; i++)
+        {
+            data.append(files[i].name, files[i]);
+        } 
+        data.append("Type", $("#ReciverName").val());
+        data.append("Id", $("#ReciverID").val());
+        
+
+        if (files.length > 0) 
+        {
+            $.ajax({
+                type: "POST",
+                url: "/home/UploadFiles",
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (message) {
+                    var datas = $("#divmsg").html();
+                    $("#file1").val(''); 
+                    $("#divmsg").html(datas + message);
+                },
+                error: function () {
+                    alert("There was error uploading files!");
+                }
+            });
+
+        }
+        else {
+            var quill = new Quill('#editor1');
+            var message = quill.root.innerHTML;
+            message = message.replace("<p><br></p>", "");
+            message = message.replace("<p> </p><p>  </p><p>  </p><p>   </p>", "");
+            $("#Massage").val(message);
+            var sendernm = $("#reciverNames").html();
+            if (sendernm == "") {
+
+                alert("Please Select Member!");
+                return false;
+            }
+            if (message == "") { 
+                return false;
+            }
+           
+            var data = $("#ChatProcessListFrom").serialize();
+            $.ajax({
+                type: "POST",
+                url: "/home/sendmsg",
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: data,
+                success: function (response) {
+
+                    var datas = $("#divmsg").html();  
+                    $("#divmsg").html(datas + response);
+
+                    $("#Massage").val("");
+                    $("#editor1").html("");
+                    var quills = new Quill('#editor1');
+                    quills.root.innerHTML("");
+                    var objDiv = document.getElementById("main-chat-content");
+                    objDiv.scrollTop = objDiv.scrollHeight;
+
+
+                },
+                error: function (response) {
+
+                }
+            });
+             
+        }
+       
+    }
+
+    function sendEnter(e, t) 
+    {
+        var sendernm = $("#ReciverName").val();
+        if (sendernm == "") {
+
+            alert("Please selected someone to chat!");
+            return false;
+        }
+
+        var charCode = "";
+        if (window.event) {
+              charCode = window.event.keyCode;
+        }
+        else if (e) {
+              charCode = e.which;
+        }
+        else { return true; }
+
+        if (charCode == 13) 
+        {
+            var quill = new Quill('#editor1');          
+            var message = quill.root.innerHTML;
+            message = message.replace("<p><br></p>", "");
+            message = message.replace("<p> </p><p>  </p><p>  </p><p>   </p>", "");
+            $("#Massage").val(message); 
+            var sendernm = $("#reciverNames").html();
+            if (sendernm == "") {
+
+                alert("Please Select Member!");
+                return false;
+            } 
+            var data = $("#ChatProcessListFrom").serialize();
+            $.ajax({
+                type: "POST",
+                url: "/home/sendmsg",
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: data,
+                success: function (response)
+                {
+                   
+                    var datas = $("#divmsg").html(); 
+                      
+                   
+                    $("#divmsg").html(datas + response);
+                    
+                    $("#Massage").val("");
+                    $("#editor1").html("");
+                    var quills = new Quill('#editor1');
+                    quills.root.innerHTML(""); 
+                    var objDiv = document.getElementById("main-chat-content");
+                    objDiv.scrollTop = objDiv.scrollHeight; 
+                   
+
+                },
+                error: function (response) {
+
+                }
+            });
+           
+
+            
+
+        }
+    }
+
+    function setuser(id, name) {
+
+        var chatname = "<span style='color:#2A2A4A; font-weight:900;'> " + name + " </span>";
+        $("#reciverNames").html(chatname);
+        $("#ReciverName").val(name);
+        $("#ReciverID").val(id); 
+        $("#divmsg").html(""); 
+        var message = $("#Massage").val();
+        var data = $("#ChatProcessListFrom").serialize();
+        $.ajax({
+            type: "POST",
+            url: "/home/recievrdAll",
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data: data,
+            success: function (response) {
+                $("#Newmessage").val(response.length);
+                var strHtml = response;
+                $("#divmsg").html(strHtml);
+                $("#Massage").val("");
+                var objDiv = document.getElementById("main-chat-content");
+                objDiv.scrollTop = objDiv.scrollHeight;
+                $(".main-chart-wrapper").addClass("responsive-chat-open");
+                $("#editor1").html("");
+                var quills = new Quill('#editor1');
+                quills.root.innerHTML("");
+
+            },
+            error: function (response) {
+
+            }
+        });
+
+
+    }
+    function setselectstatus(id) {
+        
+        $(".checkforactive").removeClass("activecolor");
+        $("#" + id).addClass("activecolor");
+
+        $(".flex-fill").removeClass("activecolorP");
+        $("#P" + id).addClass("activecolorP");
+    }
+
+</script>
+ 
+<script type="text/javascript">
+    setTimeout(
+        $(function () {
+            setInterval(function () {
+
+                var data = $("#ChatProcessListFrom").serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "/home/SetrecievrdAll",
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    data: data,
+                    success: function (response) {
+                        
+                        var datas = $("#divmsg").html(); 
+                        if (response.length > 0) {
+                            
+                            $("#divmsg").html(datas + response);
+
+                        }
+                    },
+                    error: function (response) {
+
+                    }
+                });
+
+
+            }, 1000)
+        }), 1000);
+</script> 
+<script type="text/javascript">
+    setTimeout(
+        $(function () {
+            setInterval(function () {
+
+                var data = { Notification: $("#spn_Notifications").html() };
+              
+                $.ajax({
+                    type: "POST",
+                    url: "/home/ActiveUserLists",
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    data: data,
+                    success: function (response)
+                    {
+                        if (response.length > 2) {
+                          
+                            $("#users-tab-pane").html(response);
+
+                            var id = $("#ReciverID").val();
+                            $(".checkforactive").removeClass("activecolor");
+                            $("#" + id).addClass("activecolor");
+
+                            $(".flex-fill").removeClass("activecolorP");
+                            $("#P" + id).addClass("activecolorP");
+                        }
+
+                       
+                       
+                    },
+                    error: function (response) {
+                        $("#users-tab-pane").html("");
+                    }
+
+                });
+
+            }, 1000)
+        }), 1000);
+</script>
+ 
+
+ 

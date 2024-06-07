@@ -1,0 +1,999 @@
+﻿@model Core.UserDetails.Get_UserDetails
+@{
+    ViewData["Title"] = "search_user_details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .table thead th {
+        border-top: 0;
+        border-bottom-width: 1px;
+        font-weight: 500;
+    }
+
+   
+    .form-group label {
+        font-size: 17px;
+        line-height: 1.4rem;
+        vertical-align: top;
+        margin-bottom: .5rem;
+    }
+
+  
+   ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+  
+ ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px #000;
+        border-radius: 10px;
+  
+ }
+  
+    ::-webkit-scrollbar-thumb {
+        background: grey;
+        border-radius: 10px;
+    } 
+
+ 
+        ::-webkit-scrollbar-thumb:hover {
+            background: grey;
+        }
+
+        .color{
+            color:red
+
+        }
+       
+</style>
+
+
+<div class="main-content app-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div style="height:10px;"></div>
+            </div>
+        </div>
+        <div class="row" id="Search_divhide" style="display:@ViewBag.Search_divhide">
+            <div class="col-xl-12">
+                <form class="form-sample" asp-action="search_user" asp-controller="UserDetails" method="post">
+                    <div class="card custom-card">
+                        <div class="card-header justify-content-between">
+                            <div class="card-title">
+                                Search Listing 
+                            </div>
+                         @*    <div class="alert alert-success" role="alert" style="display:@ViewBag.none">
+                                <a class="alert-link">
+                                </a>.
+                            </div> *@
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Company Name</label><span class="color">*</span>
+                                    <input onblur="return user()" class="form-control" id="text_username" asp-for="users.ddlCompany" name="users.ddlCompany" type="text" placeholder="User Name" , onkeypress="return LettersOnly(this.value)" />
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Employee Code</label><span class="color">*</span>
+                                    <input onblur="return emp_id();" onchange="return searchempid();" class="form-control" asp-for="users.Str_EmpCode" name="users.Str_EmpCode" type="text" id="text_empcode" placeholder="Employee Code" />
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">User Name</label><span class="color">*</span>
+                                    <input onblur="return pseudo();" class="form-control" asp-for="users.Str_UserName" name="users.Str_UserName" type="text" id="text_username" placeholder="User Name" />
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">First Name</label><span class="color">*</span>
+                                    <input onblur="return pseudo();" class="form-control" asp-for="users.Str_Pseudo_Name" name="Str_Pseudo_Name" type="text" id="text_pseudoname" placeholder="Pseudo name" />
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Psuedo Name</label><span class="color">*</span>
+                                    <input onblur="return emp_id();" onchange="return searchempid();" class="form-control" asp-for="users.Str_Pseudo_Name" name="users.Str_Pseudo_Name" type="text" id="text_pseudoname" placeholder="Employee ID" />
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Designation</label><span class="color">*</span>
+                                    @Html.DropDownListFor(o => o.users.Str_Designation, new SelectList(ViewBag.designation, "Int_Id", "Str_Designation"), new { @class = "form-control", @id = "text_designation", @onblur = "return designation();" })
+                                   
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="input-label" class="form-label">Department</label><span class="color">*</span>
+                                    @Html.DropDownListFor(o => o.users.Str_Dept_ID, new SelectList(ViewBag.department, "Int_Id", "Str_Department"), new { @class = "form-control", @id = "text_department", @onblur = "return department();" })
+                                </div>
+                            
+                                <div class="btn-list">
+                                    <label for="input-label" class="form-label"></label>
+                                    <button type="submit" class="btn btn-lg btn-primary">Search</button>
+                                    <a href='@Url.Action("Add-User-Details", "UserDetails")' type="button" class="btn btn-lg btn-primary">  ADD USER  </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+       </div>
+
+        <div class="row" id="add_divhide" style="display:@ViewBag.add_divhide">
+            <div class="col-xl-12">
+                <form asp-action="Add-User-Details" asp-controller="UserDetails" method="post">
+                    <div class="card custom-card">
+                        <div class="card-header justify-content-between" style="color:rgb(58,88,146);">
+                            <div class="card-title">
+                                <span style="font-size:20px;">Completing the registration form</span>
+                            </div>
+                            <div class="alert alert-success" role="alert" style="display:@ViewBag.none">
+                                @ViewBag.message
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Company</label><span class="color">*</span>
+                                    @Html.DropDownListFor(o => o.users.ddlCompany, new SelectList(ViewBag.companydetails, "Id", "CompName"), new { @class = "form-control", @id = "textcompany", onblur = "return company();" })
+                                    <span class="color" id="spn_ddlcompany"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Title</label><span class="color">*</span>
+                                    <select class="form-control" asp-for="users.Str_Title" name="users.Str_Title" id="ddltitle" onblur="return title();">
+                                        <option value="0">----Select Title-----</option>
+                                        <option value="1">Mr</option>
+                                        <option value="2">Mrs</option>
+                                        <option value="3">Miss</option>
+                                    </select>
+                                    <span class="color" id="spn_ddltitle"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">First Name</label><span class="color">*</span>
+                                    <input onblur="return firtname()" class="form-control" id="textfirstname" asp-for="users.Str_FirstName" name="users.Str_FirstName" type="text" placeholder="First Name" onkeypress="return LettersOnly(this.value)" />
+                                    <span class="color" id="spn_firstname"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Middle Name</label>
+                                    <input class="form-control" id="textmiddlename" asp-for="users.Str_MiddleName" name="users.Str_MiddleName" type="text" placeholder="Middle Name" onkeypress="return LettersOnly(this.value)" />
+                                   
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Last Name</label><span class="color">*</span>
+                                    <input class="form-control" id="textlastname" onblur="return lastname();" asp-for="users.Str_LastName" name="users.Str_LastName" type="text" placeholder="Last Name" onkeypress="return LettersOnly(this.value)" />
+                                    <span class="color" id="spn_lastname"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Psuedo Name</label><span class="color">*</span>
+                                    <input class="form-control" id="textpusedoname" onblur="return pusedoname();"  asp-for="users.Str_Pseudo_Name" name="users.Str_Pseudo_Name" type="text" placeholder="Nike Name" />
+                                    <span class="color" id="spn_pusedoname"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Employee Code</label><span class="color">*</span>
+                                    <input class="form-control" id="textempcode" onblur="return empcode();" onchange="return searchempid();" asp-for="users.Str_EmpCode" name="users.Str_EmpCode" type="text" placeholder="Employee Code" />
+                                    <span class="color" id="spn_empcode"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Login Code</label><span class="color">*</span>
+                                    <input class="form-control" id="textLoginCode" onblur="return logincode();" onchange="return searchloginid();" asp-for="users.Str_Login_ID" name="users.Str_Login_ID" type="text" placeholder="Login ID" />
+                                    <span class="color" id="spn_logincode"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">User Name</label><span class="color">*</span>
+                                    <input  class="form-control" id="textusername" onblur="return username();" asp-for="users.Str_UserName" name="users.Str_UserName" type="text" placeholder="User Name" />
+                                    <span class="color" id="spn_username"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Password</label><span class="color">*</span>
+                                    <input  class="form-control" id="textpassword" onblur="return password();" asp-for="users.Str_Password" name="users.Str_Password" type="text" placeholder="User Password" />
+                                    <span class="color" id="spn_password"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Department</label><span class="color">*</span>
+                                    @Html.DropDownListFor(o => o.users.Str_Department, new SelectList(ViewBag.department, "Int_Id", "Str_Department"), new { @onblur = "return department();", @class = "form-control", @id = "textdepartment" })
+                                    <span class="color" id="spn_ddldepartment"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Designation</label><span class="color">*</span>
+                                    @Html.DropDownListFor(o => o.users.Str_Designation, new SelectList(ViewBag.designation, "Int_Id", "Str_Designation"), new { onblur = "return degignation();", @class = "form-control", @id = "ddlDesig", @onchange = "Getreporting();" })
+                                    <span class="color" id="spn_ddldesignation"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Reporting To</label>@* <span class="color">*</span> *@
+                                    <select class="form-control" asp-for="users.Int_ReportingTo" name="users.Int_ReportingTo" id="ddlReportingTo" name="ddlReportingTo" >
+                                        <option value="">Select</option>
+                                    </select>
+                                 
+                                    <span class="color" id="spn_ddlreporting"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Access Level</label>
+                                    @Html.DropDownListFor(o => o.users.Str_Access_Level, new SelectList(ViewBag.accesslevel, "Int_Id", "Str_Access_Level"), new { @class = "form-control", @id = "textcompany" })
+                                    <span class="color" id="spn_access_level"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">DOB</label><span class="color">*</span>
+                                    <input  class="form-control" onblur="return dob();" id="textdob" asp-for="users.date_DOB" name="users.date_DOB" type="date" placeholder="User Name" />
+                                    <span class="color" id="spn_dob"></span>
+                                </div>
+                             
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Primary Email</label><span class="color">*</span>
+                                    <input class="form-control" id="textemail" onblur="return email();" asp-for="users.Str_Email" name="users.Str_Email" type="text" placeholder="User Email" />
+                                    <span class="color" id="spn_email"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Secondary Email</label><span class="color">*</span>
+                                    <input  class="form-control" id="textemail_1" onblur="return email_1();" asp-for="users.Str_Email1" name="users.Str_Email1" type="text" placeholder="User Email_1" />
+                                    <span class="color" id="spn_email_1"></span>
+                                 </div>
+                                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Phone Number</label>
+                                    <input  class="form-control" id="textphonenumber" asp-for="users.Str_Phone" name="users.Str_Phone" type="text" placeholder="User Phone number" />
+                                    <span class="color" id="spn_phoneno"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                        <label for="validationCustom01" class="form-label">Second Phone No</label><span class="color">*</span>
+                                    <input  class="form-control" id="textphonenumber_2" onblur="return phone();" asp-for="users.Str_Mobile_Num" name="users.Str_Mobile_Num" type="text" placeholder="User Mobile Number" />
+                                        <span class="color" id="spn_secondphoneno"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                        <label for="validationCustom01" class="form-label">Address</label>
+                                    <input  class="form-control" id="textaddress" asp-for="users.Str_Address" name="users.Str_Address" type="text" placeholder="User Address" />
+                                        <span class="color" id="spn_address"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Country</label>
+                                    @Html.DropDownListFor(o => o.users.Str_ddlCountry, new SelectList(ViewBag.country, "Id", "Name"), new { @class = "form-control", @id = "textcompany" })
+                                    @* <input onblur="return user()" class="form-control" id="textusername" asp-for="users.Str_Real_Name" name="users.Str_Real_Name" type="text" placeholder="User Name"/> *@
+                                    <span class="color" id="spn_country"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">State</label>
+                                    @* @Html.DropDownListFor(o => o.users.Str_ddlCountry, new SelectList(ViewBag.country, "Id", "Name"), new { @class = "form-control", @id = "textcompany" }) *@
+                                    <input class="form-control" id="textstate" asp-for="users.Str_State" name="users.Str_State" type="text" placeholder="User State" onkeypress="return LettersOnly(this.value)" />
+                                    <span class="color" id="spn_state"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">City</label>
+                                    <input class="form-control" id="textcity" asp-for="users.Str_City" name="users.Str_City" type="text" placeholder="User City" onkeypress="return LettersOnly(this.value)" />
+                                    <span class="color" id="spn_city"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Postal Code</label>
+                                    <input  class="form-control" id="textpostalcode" asp-for="users.Str_PostCode" name="users.Str_PostCode" type="text" placeholder="User Postal Code" />
+                                    <span class="color" id="spn_postalcode"></span>
+                                </div>
+                            </div>
+                                <div class="btn-list">
+                                    <label for="input-label" class="form-label"></label>
+                                    <button type="submit" onclick="return validation();" class="btn btn-primary btn-wave waves-effect waves-light">  Add User  </button>
+                                </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row" id="add_divhide" style="display:@ViewBag.update_divhide">
+            <div class="col-xl-12">
+                <form asp-action="UpdateUserDetails" asp-controller="UserDetails" method="post">
+                    <div class="card custom-card">
+                        <div class="card-header justify-content-between" style="color:rgb(58,88,146);">
+                            <div class="card-title">
+                                <span style="font-size:20px;">Update the registration form</span>
+                            </div>
+                            <div class="alert alert-success" role="alert" style="display:@ViewBag.none">
+                                @ViewBag.message
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Company</label><span class="color">*</span>
+                                    @Html.DropDownListFor(o => o.users.ddlCompany, new SelectList(ViewBag.companydetails, "Id", "CompName"), new { @class = "form-control", @id = "txtcompany", onblur = "return company();" })
+                                    <span class="color" id="spn_ddlcompany_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Title</label><span class="color">*</span>
+                                    <select class="form-control" asp-for="users.Str_Title" name="users.Str_Title" id="ddltitle_1" onblur="return title();">
+                                        <option value="0">----Select Title-----</option>
+                                        <option value="1">Mr</option>
+                                        <option value="2">Mrs</option>
+                                        <option value="3">Miss</option>
+                                    </select>
+                                    <span class="color" id="spn_ddltitle"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">First Name</label><span class="color">*</span>
+                                    <input onblur="return firtname()" class="form-control" id="txtfirstname" asp-for="users.Str_FirstName" name="users.Str_FirstName" type="text" placeholder="First Name" onkeypress="return LettersOnly(this.value)" />
+                                    <span class="color" id="spn_firstname_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Middle Name</label>
+                                    <input class="form-control" id="txtmiddlename" asp-for="users.Str_MiddleName" name="users.Str_MiddleName" type="text" placeholder="Middle Name" onkeypress="return LettersOnly(this.value)" />
+
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Last Name</label><span class="color">*</span>
+                                    <input class="form-control" id="txtlastname" onblur="return lastname();" asp-for="users.Str_LastName" name="users.Str_LastName" type="text" placeholder="Last Name" onkeypress="return LettersOnly(this.value)" />
+                                    <span class="color" id="spn_lastname_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Psuedo Name</label><span class="color">*</span>
+                                    <input class="form-control" id="txtpusedoname" onblur="return pusedoname();" asp-for="users.Str_Pseudo_Name" name="users.Str_Pseudo_Name" type="text" placeholder="Nike Name" />
+                                    <span class="color" id="spn_pusedoname"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Employee Code</label><span class="color">*</span>
+                                    <input class="form-control" id="txtempcode" onblur="return empcode();" onchange="return searchempid();" asp-for="users.Str_EmpCode" name="users.Str_EmpCode" type="text" placeholder="Employee Code" />
+                                    <span class="color" id="spn_empcode_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Login Code</label><span class="color">*</span>
+                                    <input class="form-control" id="txtLoginCode" onblur="return logincode();" onchange="return searchloginid();" asp-for="users.Str_Login_ID" name="users.Str_Login_ID" type="text" placeholder="Login ID" />
+                                    <span class="color" id="spn_logincode_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">User Name</label><span class="color">*</span>
+                                    <input class="form-control" id="txtusername" onblur="return username();" asp-for="users.Str_UserName" name="users.Str_UserName" type="text" placeholder="User Name" />
+                                    <span class="color" id="spn_username_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Password</label><span class="color">*</span>
+                                    <input class="form-control" id="txtpassword" onblur="return password();" asp-for="users.Str_Password" name="users.Str_Password" type="text" placeholder="User Password" />
+                                    <span class="color" id="spn_password_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Department</label><span class="color">*</span>
+                                    @Html.DropDownListFor(o => o.users.Str_Department, new SelectList(ViewBag.department, "Int_Id", "Str_Department"), new { @onblur = "return department();", @class = "form-control", @id = "txtdepartment" })
+                                    <span class="color" id="spn_ddldepartment"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Designation</label><span class="color">*</span>
+                                    @Html.DropDownListFor(o => o.users.Str_Designation, new SelectList(ViewBag.designation, "Int_Id", "Str_Designation"), new { onblur = "return degignation();", @class = "form-control", @id = "ddlDesig_1", @onchange = "Getreporting_1();" })
+                                    <span class="color" id="spn_ddldesignation_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Reporting To</label>@* <span class="color">*</span> *@
+                                    <select class="form-control" asp-for="users.Int_ReportingTo" name="users.Int_ReportingTo" id="ddlReportingTo_1" name="ddlReportingTo_1">
+                                        <option value="">Select</option>
+                                    </select>
+
+                                    <span class="color" id="spn_ddlreporting_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Access Level</label>
+                                    @Html.DropDownListFor(o => o.users.Str_Access_Level, new SelectList(ViewBag.accesslevel, "Int_Id", "Str_Access_Level"), new { @class = "form-control", @id = "txtcompany" })
+                                    <span class="color" id="spn_access_level"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">DOB</label><span class="color">*</span>
+                                    <input class="form-control" onblur="return dob();" id="txtdob" asp-for="users.date_DOB" name="users.date_DOB" type="date" placeholder="User Name" />
+                                    <span class="color" id="spn_dob_1"></span>
+                                </div>
+
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Primary Email</label><span class="color">*</span>
+                                    <input class="form-control" id="txtemail" onblur="return email();" asp-for="users.Str_Email" name="users.Str_Email" type="text" placeholder="User Email" />
+                                    <span class="color" id="spn_email_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Secondary Email</label><span class="color">*</span>
+                                    <input class="form-control" id="txtemail_1" onblur="return email_1();" asp-for="users.Str_Email1" name="users.Str_Email1" type="text" placeholder="User Email_1" />
+                                    <span class="color" id="spn_email_1_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Phone Number</label>
+                                    <input class="form-control" id="txtphonenumber" asp-for="users.Str_Phone" name="users.Str_Phone" type="text" placeholder="User Phone number" />
+                                    <span class="color" id="spn_phoneno_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Second Phone No</label><span class="color">*</span>
+                                    <input class="form-control" id="txtphonenumber_2" onblur="return phone();" asp-for="users.Str_Mobile_Num" name="users.Str_Mobile_Num" type="text" placeholder="User Mobile Number" />
+                                    <span class="color" id="spn_secondphoneno_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Address</label>
+                                    <input class="form-control" id="txtaddress" asp-for="users.Str_Address" name="users.Str_Address" type="text" placeholder="User Address" />
+                                    <span class="color" id="spn_address_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Country</label>
+                                    @Html.DropDownListFor(o => o.users.Str_ddlCountry, new SelectList(ViewBag.country, "Id", "Name"), new { @class = "form-control", @id = "txtcompany" })
+                                    @* <input onblur="return user()" class="form-control" id="textusername" asp-for="users.Str_Real_Name" name="users.Str_Real_Name" type="text" placeholder="User Name"/> *@
+                                    <span class="color" id="spn_country_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">State</label>
+                                    @* @Html.DropDownListFor(o => o.users.Str_ddlCountry, new SelectList(ViewBag.country, "Id", "Name"), new { @class = "form-control", @id = "textcompany" }) *@
+                                    <input class="form-control" id="txtstate" asp-for="users.Str_State" name="users.Str_State" type="text" placeholder="User State" onkeypress="return LettersOnly(this.value)" />
+                                    <span class="color" id="spn_state_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">City</label>
+                                    <input class="form-control" id="txtcity" asp-for="users.Str_City" name="users.Str_City" type="text" placeholder="User City" onkeypress="return LettersOnly(this.value)" />
+                                    <span class="color" id="spn_city_1"></span>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 input-group-sm mb-3">
+                                    <label for="validationCustom01" class="form-label">Postal Code</label>
+                                    <input class="form-control" id="txtpostalcode" asp-for="users.Str_PostCode" name="users.Str_PostCode" type="text" placeholder="User Postal Code" />
+                                    <span class="color" id="spn_postalcode_1"></span>
+                                </div>
+                            </div>
+                            <div class="btn-list">
+                                <label for="input-label" class="form-label"></label>
+                                <input type="hidden" asp-for="users.Int_Id" name="users.Int_Id" id="Str_OldEmp_ID" />
+                                <button type="submit" class="btn btn-primary btn-wave waves-effect waves-light" style="display:@ViewBag.uptbutton">UPDATE USER</button>
+                                <a href="/UserDetails/search_user_details"><button type="button" class="btn btn-primary btn-wave waves-effect waves-light">CANCLE</button></a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card custom-card">
+                    <div class="card-header" style="background-color:#282f53">
+                        <div class="card-title">User List</div>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-bordered text-nowrap table table-striped header-fixed" style="overflow-x:auto;">
+                            <thead>
+                                <tr>
+                                    <th>SR.NO</th>
+                                    <th>Employee_Code</th>
+                                    <th>Login_Code</th>
+                                    <th>Full Name</th>
+                                    <th>Nick Name</th>
+                                    <th>UserName</th>
+                                    <th>Company Name</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                  @*   <th>Is_Active</th> *@
+                                    <th>Status</th>
+                                  
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.user != null)
+                                {
+                                    @for (int i = 0; i < Model.user.Count(); i++)
+                                    {
+                                        <tr>
+                                            <td class="filterable-cell">@Model.user[i].SR_No</td>
+                                            <td class="filterable-cell">@Model.user[i].Str_EmpCode</td>
+                                            <td class ="filterable-cell">@Model.user[i].Str_Login_ID</td>
+                                            <td class="filterable-cell">@Model.user[i].Str_FirstName<span> &nbsp;@Model.user[i].Str_MiddleName</span><span>@Model.user[i].Str_LastName</span></td>
+                                            <td class="filterable-cell">@Model.user[i].Str_Pseudo_Name</td>
+                                            <td class="filterable-cell">@Model.user[i].Str_UserName</td>
+                                            <td class="filterable-cell">@Model.user[i].ddlCompany</td>
+                                            <td class="filterable-cell">@Model.user[i].Str_Department</td>
+                                            <td class="filterable-cell">@Model.user[i].Str_Designation</td>
+                                            <td class="filterable-cell">@Model.user[i].Str_Email</td>
+                                            <td class="filterable-cell">@Model.user[i].Str_Mobile_Num</td>
+                                        @*     <td class="filterable-cell">@Model.user[i].Int_Is_Active</td> *@
+                                            <td>
+                                                <div class="hstack gap-2 fs-15">
+                                                    <a href="#"
+                                                       class="btn btn-icon btn-sm btn-success-transparent rounded-pill">
+                                                        <i class="ri-download-2-line"></i>
+                                                    </a>
+                                                    <a href="/UserDetails/UpdateUserDetails?id=@Model.user[i].Int_Id"
+                                                       class="btn btn-icon btn-sm btn-info-transparent rounded-pill">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <a  onclick="return deleteone(@Model.user[i].Int_Id)"
+                                                       class="btn btn-icon btn-sm btn-danger-transparent rounded-pill">
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+
+                                            @* <td class="filterable-cell"><a href="/UserDetails/UpdateUserDetails?id=@Model.user[i].Str_Emp_ID"><button type="button" class="btn btn-lg btn-primary">Update</button></a></td> *@
+                                            @* <td><button type="button" class="btn btn-fw">Delete</button></td> *@
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/assets/js/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+    window.onload = Getreporting_1();
+
+    function deleteone(Id) {
+        var r = confirm("Do you Want To Delete\n");
+        var da = Id;
+        if (r == true) {
+            var data = {
+                Int_Id: da,
+            }
+            alert(data);
+            $.ajax({
+                type: 'POST',
+                url: '/UserDetails/Deletefun',
+                contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+                data: "{id:" + JSON.stringify(Id) + "}",
+                dataType: "json",
+                success: function (data) {
+                    alert(data);
+                    alert("response");
+
+                    $(".transparentCover").hide();
+                    $("#wait").hide();
+                },
+                error: function (xhr, status, error) {
+                    $(".transparentCover").hide();
+                }
+            });
+        }
+      
+    }
+    
+
+    function Getreporting() {
+        //debugger;
+        var id = $('#ddlDesig').val()
+       
+        var data = {
+            Int_ReportingTo: id
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/UserDetails/ReportingList',
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            data: data,
+            dataType: "json",
+            success: function (response) {
+                $('#ddlReportingTo').empty();
+                var ddl = "";
+                for (var i = 0; i < response.Table.length; i++) {
+                    ddl += "<option value='" + response.Table[i]["Id"] + "'>" + response.Table[i]["Name"] + "</option>";
+                }
+                if (response.Table.length <= 0) {
+                    ddl += "<option value=\"0\">Self Reporting</option>";
+                }
+                $('#ddlReportingTo').html(ddl);
+            },
+            error: function (xhr, status, error) {
+
+            }
+        });
+    }
+
+ 
+
+    function Getreporting_1() {
+        //debugger;
+        var id = $('#ddlDesig_1').val()
+       
+        var data = {
+            Int_ReportingTo: id
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/UserDetails/ReportingList',
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            data: data,
+            dataType: "json",
+            success: function (response) {
+                $('#ddlReportingTo_1').empty();
+                var ddl = "";
+                for (var i = 0; i < response.Table.length; i++) {
+                    ddl += "<option value='" + response.Table[i]["Id"] + "'>" + response.Table[i]["Name"] + "</option>";
+                }
+                if (response.Table.length <= 0) {
+                    ddl += "<option value=\"0\">Self Reporting</option>";
+                }
+                $('#ddlReportingTo_1').html(ddl);
+            },
+            error: function (xhr, status, error) {
+
+            }
+        });
+    }
+
+    function searchloginid() {
+       
+        var jsdata = $("#textLoginCode").val();
+        var data = {
+            Str_Login_ID: jsdata
+        }
+        $.ajax({
+            type: "POST",
+            url: "/UserDetails/searchloginid",
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            dataType: "json",
+            data: data,
+            responseType: "json",
+            success: function (data) {
+
+                $("#divProgressBar2").hide();
+                if (data != "") {
+                    $("#spn_logincode").html("This Login ID is Already exist !!");
+                    return false;
+                }
+                else {
+                    $("#spn_logincode").html("");
+                    return true;
+                }
+            },
+            error: function (data) { $("#divProgressBar2").hide(); }
+        });
+
+    }
+
+    function searchempid() {
+        var jsdata = $("#textempcode").val();
+        var data = {
+            Str_Emp_ID: jsdata
+        }
+        $.ajax({
+            type: "POST",
+            url: "/UserDetails/searchempid",
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            dataType: "json",
+            data: data,
+            responseType: "json",
+            success: function (data) {
+                $("#divProgressBar2").hide();
+                if (data != "") {
+                    $("#spn_empcode").html("this Employee ID is already exist !!");
+                    return false;
+                }
+                else {
+                    $("#spn_empcode").html("");
+                    return true;
+                }
+            },
+            error: function (data) { $("#divProgressBar2").hide(); }
+        });
+
+    }
+
+
+    function company() {
+
+        if ($("#textcompany").val() == "" || $("#textcompany").val() == "0") {
+            $("#spn_ddlcompany").html("Company can not be blank");
+        }
+        else {
+            $("#spn_ddlcompany").html("");
+        }
+    }
+
+
+    // function title() {
+    //     if ($("#ddltitle").val() == "" || $("#ddltitle").val() == "0") {
+    //         $("#spn_ddltitle").html("Title can not be blank");
+    //     }
+    //     else {
+    //         $("#spn_ddltitle").html("");
+    //     }
+    // }
+
+    function firtname() {
+        if ($("#textfirstname").val() == "") {
+            $("#spn_firstname").html("First Name Can not be blank");
+        }
+        else {
+            $("#spn_firstname").html("");
+        }
+    }
+
+    function lastname() {
+        if ($("#textlastname").val() == "") {
+            $("#spn_lastname").html("Last name can not be blank");
+        }
+        else {
+            $("#spn_lastname").html("");
+        }
+    }
+
+    function pusedoname() {
+
+        if ($("#textpusedoname").val() == "") {
+            $("#spn_pusedoname").html("Pusedo name can not be blank");
+        }
+        else {
+            $("#spn_pusedoname").html("");
+        }
+    }
+
+    function empcode() {
+
+        if ($("#textempcode").val() == "") {
+
+            $("#spn_empcode").html("Emp_code can not be blank");
+        }
+        else {
+            $("#spn_empcode").html("");
+        }
+    }
+
+    function logincode() {
+        if ($("#textLoginCode").val() == "") {
+            $("#spn_logincode").html("Login code can not be blank");
+        }
+        else {
+            $("#spn_logincode").html("");
+        }
+    }
+
+    
+    function username() {
+
+        if ($("#textusername").val() == "") {
+            $("#spn_username").html("User name can not be blank");
+        }
+        else {
+            $("#spn_username").html("");
+        }
+    }
+    
+    function password() {
+
+        if ($("#textpassword").val() == "") {
+            $("#spn_password").html("Password can not be blank");
+        }
+        else {
+            $("#spn_password").html("");
+        }
+    }
+    
+    function department() {
+
+        if ($("#textdepartment").val() == "" || $("#textdepartment").val() == "0") {
+            $("#spn_ddldepartment").html("Department can not be blank");
+        }
+        else {
+            $("#spn_ddldepartment").html("");
+        }
+    }
+    
+    function degignation() {
+
+        if ($("#ddlDesig").val() == "" || $("#ddlDesig").val() == "0") {
+            $("#spn_ddldesignation").html("Designation can not be blank");
+        }
+        else {
+            $("#spn_ddldesignation").html("");
+        }
+    }
+    
+    function dob() {
+
+        if ($("#textdob").val() == "") {
+            $("#spn_dob").html("DOB can not be blank");
+        }
+        else {
+            $("#spn_dob").html("");
+        }
+    }
+    
+    function email() {
+
+        if ($("#textemail").val() == "") {
+            $("#spn_email").html("Email can not be blank");
+        }
+        else {
+            $("#spn_email").html("");
+        }
+    }
+
+    function email_1() {
+
+        if ($("#textemail_1").val() == "") {
+            $("#spn_email_1").html("Email_1 can not be blank");
+        }
+        else {
+            $("#spn_email_1").html("");
+        }
+    }
+
+    function phone() {
+
+        if ($("#textphonenumber_2").val() == "") {
+            $("#spn_secondphoneno").html("Phone no can not b blank");
+        }
+        else {
+            $("#spn_secondphoneno").html("");
+        }
+    }
+
+
+    $(document).ready(function () {
+        $('#textusername').on("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+    });
+
+
+
+    function validation() {
+        alert('hello');
+        var str = "";
+        if ($("#textcompany").val() == "" || $("#textcompany").val() == "0") {
+
+            $("#spn_ddlcompany").html("Company name can not be blank");
+            str += "Company name can not be blank\n\r";
+        }
+        else { $("#spn_ddlcompany").html(""); }
+
+        if ($("#ddltitle").val() == "" || $("#ddltitle").val() == "0") {
+
+            $("#spn_ddltitle").html("Title can not be blank");
+            str += "Title can not be blank\n\r";
+        }
+        else { $("#spn_ddltitle").html(""); }
+
+        if ($("#textfirstname").val() == "") {
+            $("#spn_firstname").html("First name can not be blank");
+            str += "First name can not be blank \n\r";
+        }
+        else { $("#spn_firstname").html(""); }
+
+        if ($("#textlastname").val() == "") {
+            $("#spn_lastname").html("Last name can not be blank");
+            str += "Last name can not be blank \n\r";
+        }
+        else { $("#spn_lastname").html(""); }
+
+        if ($("#textpusedoname").val() == "") {
+            $("#spn_pusedoname").html("Pusedo name can not be blank");
+            str += "Entering a Password is Necessary !! \n\r";
+        }
+        else { $("#spn_pusedoname").html(""); }
+
+        if ($("#textempcode").val() == "") {
+            $("#spn_empcode").html("Emp code can not be blank");
+            str += "Entering a Designation is Necessary !! \n\r";
+        }
+        else { $("#spn_empcode").html(""); }
+
+        if ($("#textLoginCode").val() == "") {
+            $("#spn_logincode").html("Login code can not be blank");
+            str += "Login code can not be blank \n\r";
+        }
+        else { $("#spn_logincode").html(""); }
+
+        if ($("#textpassword").val() == "") {
+            $("#spn_password").html("Password can not be blank");
+            str += "password can not be blank \n\r";
+        }
+        else { $("#spn_password").html(""); }
+
+        if ($("#textdepartment").val() == "" || $("#textdepartment").val() == "0") {
+            $("#spn_ddldepartment").html("department can not be blank");
+            str += "Department can not be blank \n\r";
+        }
+        else { $("#spn_ddldepartment").html(""); }
+
+        if ($("#ddlDesig").val() == "" || $("#ddlDesig").val() == "0") {
+            $("#spn_ddldesignation").html("Designation can not be blank");
+            str += "Designation can not be blank \n\r";
+        }
+        else { $("#spn_ddldesignation").html(""); }
+
+        if ($("#textdob").val() == "") {
+            $("#spn_dob").html("DOB can not be blank");
+            str += "DOB can not be blank \n\r";
+        }
+        else { $("#spn_dob").html(""); }
+
+        if ($("#textemail").val() == "") {
+            $("#spn_email").html("Email can not be blank");
+            str += "Email can not be blank \n\r";
+        }
+        else { $("#spn_email").html(""); }
+
+        if ($("#textemail_1").val() == "") {
+            $("#spn_email_1").html("Email_1 can not be blank");
+            str += "Email_1 can not be blank \n\r";
+        }
+        else { $("#spn_email_1").html(""); }
+
+        if ($("#textphonenumber_2").val() == "") {
+            $("#spn_secondphoneno").html("Phone Number can not be blank");
+            str += "Phone Number can not be blank \n\r";
+        }
+        else { $("#spn_secondphoneno").html(""); }
+
+        if ($("#textLoginCode").val() == "" || $("#textLoginCode").val() != "") {
+            searchloginid();
+        }
+        else { $("#spn_logincode").html(""); }
+
+        if ($("#textempcode").val() != "" || $("#textempcode").val() == "") {
+            searchempid();
+        }
+        else { $("#spn_empcode").html(""); }
+        if (str == "") {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function LettersOnly(e) {
+        var keycode;
+        if (window.event) {
+            keycode = window.event.keyCode; /*alert('IE');
+        }
+        else if (e) {
+            keycode = e.which; /*alert('FF');*/
+        }
+        var k = parseInt(keycode);
+        if ((k > 64 && k < 91) || (k > 96 && k < 123) || (k == 32) || (k == 8) || (k == 0)) {
+            return true;
+        }
+        return false;
+    }
+
+
+</script>
+
+<script type="text/javascript">
+    window.onload = function () {
+        var GridId = "submissionTable";
+        var ScrollHeight = 300;
+        var grid = document.getElementById(GridId);
+        var gridWidth = grid.offsetWidth;
+        var gridHeight = grid.offsetHeight;
+        var headerCellWidths = new Array();
+        for (var i = 0; i < grid.getElementsByTagName("TH").length; i++) {
+            headerCellWidths[i] = grid.getElementsByTagName("TH")[i].offsetWidth;
+        }
+        grid.parentNode.appendChild(document.createElement("div"));
+        var parentDiv = grid.parentNode;
+
+        var table = document.createElement("table");
+        for (i = 0; i < grid.attributes.length; i++) {
+            if (grid.attributes[i].specified && grid.attributes[i].name != "id") {
+                table.setAttribute(grid.attributes[i].name, grid.attributes[i].value);
+            }
+        }
+        table.style.cssText = grid.style.cssText;
+        table.style.width = gridWidth + "px";
+        table.appendChild(document.createElement("tbody"));
+        table.getElementsByTagName("tbody")[0].appendChild(grid.getElementsByTagName("TR")[0]);
+        var cells = table.getElementsByTagName("TH");
+
+        var gridRow = grid.getElementsByTagName("TR")[0];
+        for (var i = 0; i < cells.length; i++) {
+            var width;
+            if (headerCellWidths[i] > gridRow.getElementsByTagName("TD")[i].offsetWidth) {
+                width = headerCellWidths[i];
+            }
+            else {
+                width = gridRow.getElementsByTagName("TD")[i].offsetWidth;
+            }
+            cells[i].style.width = parseInt(width - 3) + "px";
+            gridRow.getElementsByTagName("TD")[i].style.width = parseInt(width - 3) + "px";
+        }
+        parentDiv.removeChild(grid);
+
+        var dummyHeader = document.createElement("div");
+        dummyHeader.appendChild(table);
+        parentDiv.appendChild(dummyHeader);
+        var scrollableDiv = document.createElement("div");
+        if (parseInt(gridHeight) > ScrollHeight) {
+            gridWidth = parseInt(gridWidth);
+        }
+        scrollableDiv.style.cssText = "overflow:auto;height:" + ScrollHeight + "px;width:" + gridWidth + "px";
+        scrollableDiv.appendChild(grid);
+        parentDiv.appendChild(scrollableDiv);
+    }
+</script>
